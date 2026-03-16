@@ -1,0 +1,8 @@
+name: 'hr_analytics'
+version: '1.0.0'
+config-version: 2
+
+models:
+  hr_analytics:
+    # This tells dbt to physically create Tables in BigQuery, not just Views
+    +materialized: table

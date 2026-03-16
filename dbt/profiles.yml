@@ -1,0 +1,12 @@
+hr_analytics:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: service-account
+      # This dynamically grabs the Project ID from Kestra!
+      project: "{{ env_var('GCP_PROJECT_ID') }}"
+      dataset: hr_analytics_dataset
+      threads: 4
+      # This looks for the reviewer's dropped JSON file
+      keyfile: /pipeline/google_credentials.json
