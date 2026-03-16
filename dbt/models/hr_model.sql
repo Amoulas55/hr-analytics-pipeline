@@ -24,9 +24,12 @@ SELECT
     MonthlyIncome AS monthly_income,
     YearsAtCompany AS years_at_company,
     
-    -- 2. Feature Engineering: Create an integer flag 
+    -- 2. Feature Engineering: FIX - Cast to STRING before comparing
     Attrition AS attrition_status,
-    CASE WHEN Attrition = 'Yes' THEN 1 ELSE 0 END AS attrition_flag,
+    CASE 
+        WHEN CAST(Attrition AS STRING) IN ('Yes', 'true', 'TRUE') THEN 1 
+        ELSE 0 
+    END AS attrition_flag,
     
     -- 3. Data Type Casting: Make sure BigQuery knows this is a real Date
     CAST(snapshot_date AS DATE) AS snapshot_date
