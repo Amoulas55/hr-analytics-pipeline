@@ -76,7 +76,7 @@ First, we will build the Google Cloud Storage bucket and BigQuery dataset.
    ```bash
    cd terraform
    ```
-4. Open the variables.tf file in a text editor. Find the `project_id` variable and replace the default value with your actual GCP Project ID.
+4. Open the `variables.tf` file in a text editor. Find the `project_id` variable and replace the default value with your actual GCP Project ID.
 5. Initialize and apply the Terraform configuration:
    ```bash
    terraform init
