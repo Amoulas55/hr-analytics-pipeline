@@ -94,7 +94,7 @@ Follow these detailed steps to replicate the entire pipeline from scratch.
 * The Kestra flow is configured to automatically pull the latest transformation code directly from the `main` branch of this GitHub repository. 
 * During the execution, it installs the `dbt-bigquery` adapter, connects to your warehouse, and executes `dbt run` to build the Staging, Dimension, and Fact tables.
 
-📈 4. The Dashboard
+### Step 4: 📈 The Dashboard
 The dashboard was built using Tableau and satisfies all project requirements:
 * **Categorical Distribution:** A bar chart displaying attrition rates across the three company departments, identifying Sales as the highest-risk area.
 * **Temporal Distribution:** A line chart showing the "Attrition by Years at Company." This trend analysis visualizes turnover risk across the employee lifecycle (satisfying the temporal requirement).
