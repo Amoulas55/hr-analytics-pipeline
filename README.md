@@ -102,8 +102,6 @@ Next, we will start Kestra to move the data into the cloud.
 
 ### Step 3: Automated dbt Transformations
 * You do **not** need to run dbt commands manually! 
-* The Kestra flow is configured to automatically pull the latest transformation code directly from the `main` branch of this GitHub repository. 
-* During the execution, it installs the `dbt-bigquery` adapter, connects to your warehouse, and executes `dbt run` to build the Staging, Dimension, and Fact tables.
 1. Once you click Execute in Kestra, watch the Gantt chart in the UI.
 2. The Kestra pipeline is fully automated: it will upload the raw data to GCS, load it into BigQuery, and then automatically pull the dbt/ folder from this GitHub repository.
 3. It will install the dbt-bigquery adapter and run dbt build directly inside your BigQuery warehouse, creating the partitioned and clustered stg_hr_data, dim_employees, and fct_attrition_stats tables.
@@ -111,12 +109,11 @@ Next, we will start Kestra to move the data into the cloud.
 
 ### Step 4: Visualizing (Tableau)
 To view the interactive dashboard, reviewers have two options:
-1. **View the Packaged Workbook (Recommended):** Download the `hr_attrition_dashboard.twbx` file included in this repository. You can open this file using Tableau Desktop or the free Tableau Reader to interact with the visualizations.
+1. **View the Packaged Workbook (Recommended):** Download the `hr_attrition_dashboard.twbx` file included in this repository. You can open this file using Tableau Desktop or the free Tableau Reader (https://www.tableau.com/products/reader)  to interact with the visualizations.
 2. **Recreate from Scratch (Optional):** If you wish to connect it to your own BigQuery instance:
    * Open Tableau and connect to your Google BigQuery.
    * Import the `fct_attrition_stats` table from your dataset.
    * Use the `attrition_flag` (set to Average) to calculate the attrition rate, and use the `department` and `Years At Company` fields to recreate the breakdown visuals.
-
 ---
 
 ## 🎥 Demo Video
