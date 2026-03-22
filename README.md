@@ -84,6 +84,7 @@ First, we will build the Google Cloud Storage bucket and BigQuery dataset.
    ```
 ### Step 2: Orchestration (Kestra)
 Next, we will start Kestra to move the data into the cloud.
+**🚨 IMPORTANT:** Make sure **Docker Desktop** is open and the engine is fully running (green status) before proceeding with the commands below.
 1. Navigate back to the main project folder:
    ```bash
    cd ..
