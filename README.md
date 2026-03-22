@@ -82,14 +82,6 @@ First, we will build the Google Cloud Storage bucket and BigQuery dataset.
    terraform init
    terraform apply
    ```
-
-# Update variables.tf with your GCP project_id, then run:
-```bash
-terraform init
-terraform apply -auto-approve
-```
-(Type yes when prompted. Terraform will now build your GCS Data Lake Bucket and BigQuery Dataset).
-
 ### Step 2: Orchestration (Kestra)
 Next, we will start Kestra to move the data into the cloud.
 1. Navigate back to the main project folder:
