@@ -70,7 +70,7 @@ First, we will build the Google Cloud Storage bucket and BigQuery dataset.
    ```bash
    git clone [https://github.com/Amoulas55/hr-analytics-pipeline.git](https://github.com/Amoulas55/hr-analytics-pipeline.git)
    cd hr-analytics-pipeline
-2. Move your google_credentials.json file directly into this main hr-analytics-pipeline folder.
+2. Move your google_credentials.json file directly into this main hr-analytics-pipeline folder. Make sure it's name is google_credentials.json.
 3. Navigate into the Terraform folder:
    ```bash
    cd terraform
