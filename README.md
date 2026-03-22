@@ -70,19 +70,24 @@ First, we will build the Google Cloud Storage bucket and BigQuery dataset.
    ```bash
    git clone [https://github.com/Amoulas55/hr-analytics-pipeline.git](https://github.com/Amoulas55/hr-analytics-pipeline.git)
    cd hr-analytics-pipeline
-2. Move your google_credentials.json file directly into this main hr-analytics-pipeline folder. Make sure it's name is google_credentials.json.
+   ```
+2. Move your `google_credentials.json` file directly into this main `hr-analytics-pipeline` folder. Make sure it's name is `google_credentials.json`.
 3. Navigate into the Terraform folder:
    ```bash
    cd terraform
    ```
-4. Open the variables.tf file in a text editor. Find the project_id variable and replace the default value with your actual GCP Project ID.
+4. Open the variables.tf file in a text editor. Find the `project_id` variable and replace the default value with your actual GCP Project ID.
 5. Initialize and apply the Terraform configuration:
+   ```bash
    terraform init
    terraform apply
+   ```
 
 # Update variables.tf with your GCP project_id, then run:
+```bash
 terraform init
 terraform apply -auto-approve
+```
 (Type yes when prompted. Terraform will now build your GCS Data Lake Bucket and BigQuery Dataset).
 
 ### Step 2: Orchestration (Kestra)
@@ -95,10 +100,10 @@ Next, we will start Kestra to move the data into the cloud.
    curl -o docker-compose.yml https://raw.githubusercontent.com/kestra-io/kestra/develop/docker-compose.yml
    docker compose up -d
    ```
-3. Wait about 30 seconds, then open your web browser and go to: http://localhost:8080
+3. Wait about 30 seconds, then open your web browser and go to: `http://localhost:8080`
 4. On the left sidebar, click Flows, then click the Create button at the top right.
 5. Open the **orchestration/ folder** in this GitHub repository, copy all the text inside the YAML file, and paste it into the Kestra editor.
-6. **CRITICAL**: Look at the variables: section at the top of the YAML code. Update gcp_project_id and gcp_bucket_name to match the ones Terraform just created for you.
+6. **CRITICAL**: Look at the variables: section at the top of the YAML code. Update `gcp_project_id` and `gcp_bucket_name` to match the ones Terraform just created for you.
 7. Click **Save** and then **Execute**. 
 
 
