@@ -72,7 +72,9 @@ First, we will build the Google Cloud Storage bucket and BigQuery dataset.
    cd hr-analytics-pipeline
 2. Move your google_credentials.json file directly into this main hr-analytics-pipeline folder.
 3. Navigate into the Terraform folder:
+   ```bash
    cd terraform
+   ```
 4. Open the variables.tf file in a text editor. Find the project_id variable and replace the default value with your actual GCP Project ID.
 5. Initialize and apply the Terraform configuration:
    terraform init
