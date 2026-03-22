@@ -3,97 +3,111 @@
 
 ![Dashboard Screenshot](zoomcamp_project_visualizations.png)
 
-## 🎯 1. Problem Statement
-Employee attrition is a massive hidden cost for modern organizations. Human Resources teams often struggle to proactively identify which departments are at risk of high turnover because their data is siloed, messy, and requires manual Excel updates. 
+## 🎯 1. Problem Statement & Dataset
+Employee attrition is a massive hidden cost for modern organizations. This project builds an automated batch data pipeline to process HR data, allowing executives to track global attrition rates and pinpoint high-risk departments instantly.
 
-**The Goal:** Develop an end-to-end, fully automated batch data pipeline that simulates daily HR data ingestion, archives it in a Data Lake, transforms it in a Data Warehouse, and serves it to an interactive BI dashboard. This allows HR executives to track global attrition rates and pinpoint high-risk departments instantly.
+* **Dataset Used:** IBM HR Analytics Employee Attrition & Performance (via Kaggle)
+* **Goal:** Automate ingestion into a Data Lake, transform the data in a Data Warehouse, and serve it to an interactive BI dashboard.
 
 ---
 
-## 🛠️ 2. Technologies & Architecture
-This project utilizes a modern data stack, entirely deployed in the cloud.
+## 🛠️ 2. Technologies & Architecture Flow
+This project utilizes a modern data stack deployed in the Google Cloud Platform (GCP).
 
-* **Cloud Provider:** Google Cloud Platform (GCP)
-* **Infrastructure as Code (IaC):** Terraform
-* **Workflow Orchestration:** Kestra
+* **Infrastructure as Code:** Terraform
+* **Orchestration:** Kestra
 * **Data Lake:** Google Cloud Storage (GCS)
 * **Data Warehouse:** Google BigQuery
-* **Data Transformation:** dbt (Data Build Tool)
-* **Business Intelligence:** Tableau
+* **Transformation:** dbt (Data Build Tool)
+* **BI Tool:** Tableau
 
-### Architecture Diagram / Pipeline Flow
-1. **Extraction:** A Python script simulates daily batch drops of employee data.
-2. **Data Lake (GCS):** Kestra orchestrates the upload of raw `.csv` files into a GCS bucket.
-3. **Data Warehouse (BigQuery):** Data is loaded into a raw Bronze table in BigQuery.
-4. **Transformations (dbt):** dbt executes a Medallion Architecture (Bronze -> Silver -> Gold) directly inside BigQuery.
-5. **Dashboard (Tableau):** A live connection to the final Gold table serves the interactive dashboard.
+### Pipeline Flow
+1. **Data Lake (GCS):** Kestra orchestrates the upload of the raw HR `.csv` file into a GCS bucket.
+2. **Data Warehouse (BigQuery):** Data is loaded into a raw table in BigQuery.
+3. **Transformations (dbt):** dbt executes SQL transformations directly inside BigQuery to clean and aggregate the data.
+4. **Dashboard (Tableau):** Data was extracted from BigQuery to build the interactive dashboard offline.
 
 ---
 
 ## 🗄️ 3. Data Warehouse & dbt Transformations
-To ensure cost-efficiency and performance, the BigQuery tables were heavily optimized and transformed using **dbt**.
+To ensure cost-efficiency and performance, the BigQuery tables were optimized and transformed using **dbt**.
 
-### Medallion Architecture:
-* **`stg_hr_data` (Silver View):** Cleans raw data, standardizes column names to `snake_case`, and casts correct data types (e.g., casting age to `INT64`).
-* **`dim_employees` (Gold Table):** Creates an employee dimension table. Introduces a feature-engineered column (`income_bracket`) using dbt conditional logic.
-* **`fct_attrition_stats` (Gold Table):** The core fact table containing the binary `attrition_flag` used for dashboard metrics.
+### The dbt Models:
+* **`stg_hr_data`:** Cleans raw data, standardizes column names to `snake_case`, and casts correct data types (e.g., casting age to `INT64`).
+* **`dim_employees`:** Creates an employee dimension table and introduces feature-engineered columns using dbt conditional logic.
+* **`fct_attrition_stats`:** The core fact table containing the binary `attrition_flag` used for dashboard metrics.
 
 ### Optimization (Partitioning & Clustering):
-* **Partitioned by `snapshot_date` (Daily):** Ensures that when HR queries specific historical days, BigQuery only scans that day's partition, drastically reducing compute costs.
-* **Clustered by `department`:** Since the BI dashboard heavily filters and categorizes by department, clustering organizes this data together physically to speed up query execution.
+* **Partitioned by `snapshot_date` (Daily):** Ensures that when querying specific historical days, BigQuery only scans that day's partition, reducing compute costs.
+* **Clustered by `department`:** Since the BI dashboard heavily filters by department, clustering organizes this data physically to speed up query execution.
 
 ---
 
 ## 📈 4. The Dashboard
 The dashboard was built using **Tableau** and satisfies all project requirements:
 * **Categorical Distribution:** A bar chart displaying attrition rates across the three company departments, identifying Sales as the highest-risk area.
-* **Temporal Distribution:** A line chart showing "Attrition by Years at Company." This trend analysis visualizes turnover risk across the employee lifecycle (satisfying the temporal requirement).
+* **Temporal Distribution:** A line chart showing "Attrition by Years at Company." This trend analysis visualizes turnover risk across the employee lifecycle.
 * **KPI Tiles:** High-level scorecards for Total Headcount and Global Attrition Rate.
 * **Interactivity:** Every chart acts as a filter, allowing users to drill down into specific data points.
 
 ---
 
-## 🚀 Reproducibility: How to Run This Project
-Follow these detailed steps to replicate the entire pipeline from scratch.
+## 🚀 5. Reproducibility: Step-by-Step Instructions
+*Note: Because this project provisions real cloud resources, you must provide your own GCP project and credentials.*
 
 ### Prerequisites
-* A Google Cloud Platform (GCP) account.
-* A GCP Service Account with `BigQuery Admin` and `Storage Admin` roles. Download the JSON key and rename it to `google_credentials.json`.
-* **Terraform** installed locally.
-* **Docker** installed locally (to run Kestra).
+1. **GCP Account:** You need an active Google Cloud Platform account and a new Project.
+2. **Service Account:** Create a Service Account in your GCP Project with the `BigQuery Admin` and `Storage Admin` roles. 
+3. **Credentials:** Generate a JSON key for this Service Account. Download it, rename it exactly to `google_credentials.json`, and keep it handy.
+4. **Local Tools:** Ensure you have [Git](https://git-scm.com/), [Terraform](https://www.terraform.io/downloads), and [Docker](https://www.docker.com/) installed on your machine.
 
-### Step 1: Infrastructure as Code (Terraform)
-1. Clone this repository to your local machine:
+---
+
+### Step 1: Provision Infrastructure (Terraform)
+First, we will build the Google Cloud Storage bucket and BigQuery dataset.
+
+1. Open your terminal and clone this repository:
    ```bash
-   git clone https://github.com/Amoulas55/hr-analytics-pipeline.git
-   cd hr-analytics-pipeline/terraform
-   ```
-2. Update the `variables.tf` file with your specific `project_id` and GCP region.
-3. Initialize and apply the infrastructure:
-   ```bash
+   git clone [https://github.com/Amoulas55/hr-analytics-pipeline.git](https://github.com/Amoulas55/hr-analytics-pipeline.git)
+   cd hr-analytics-pipeline
+2. Move your google_credentials.json file directly into this main hr-analytics-pipeline folder.
+3. Navigate into the Terraform folder:
+   cd terraform
+4. Open the variables.tf file in a text editor. Find the project_id variable and replace the default value with your actual GCP Project ID.
+5. Initialize and apply the Terraform configuration:
    terraform init
-   terraform plan
    terraform apply
-   ```
-   *This will automatically provision your GCS Data Lake Bucket and BigQuery Dataset.*
+
+# Update variables.tf with your GCP project_id, then run:
+terraform init
+terraform apply -auto-approve
+(Type yes when prompted. Terraform will now build your GCS Data Lake Bucket and BigQuery Dataset).
 
 ### Step 2: Orchestration (Kestra)
-1. Start Kestra locally using Docker Compose. Open a terminal in your project root and run:
+Next, we will start Kestra to move the data into the cloud.
+1. Navigate back to the main project folder:
+   ```bash
+   cd ..
+2. Download the Kestra Docker Compose file and start the container:
    ```bash
    curl -o docker-compose.yml https://raw.githubusercontent.com/kestra-io/kestra/develop/docker-compose.yml
    docker compose up -d
    ```
-2. Navigate to `http://localhost:8080` in your web browser.
-3. Go to **Flows** -> **Create**.
-4. Copy the YAML code found in the `orchestration/` folder of this repository and paste it into the Kestra editor.
-5. Update the `gcp_project_id` and `gcp_bucket_name` variables in the YAML inputs to match your GCP project.
-6. **Important:** Ensure your `google_credentials.json` is accessible to the Kestra container so it can authenticate with GCP.
+3. Wait about 30 seconds, then open your web browser and go to: http://localhost:8080
+4. On the left sidebar, click Flows, then click the Create button at the top right.
+5. Open the **orchestration/ folder** in this GitHub repository, copy all the text inside the YAML file, and paste it into the Kestra editor.
+6. **CRITICAL**: Look at the variables: section at the top of the YAML code. Update gcp_project_id and gcp_bucket_name to match the ones Terraform just created for you.
 7. Click **Save** and then **Execute**. 
 
-### Step 3: Automated dbt Git-Sync (Transformations)
+
+### Step 3: Automated dbt Transformations
 * You do **not** need to run dbt commands manually! 
 * The Kestra flow is configured to automatically pull the latest transformation code directly from the `main` branch of this GitHub repository. 
 * During the execution, it installs the `dbt-bigquery` adapter, connects to your warehouse, and executes `dbt run` to build the Staging, Dimension, and Fact tables.
+1. Once you click Execute in Kestra, watch the Gantt chart in the UI.
+2. The Kestra pipeline is fully automated: it will upload the raw data to GCS, load it into BigQuery, and then automatically pull the dbt/ folder from this GitHub repository.
+3. It will install the dbt-bigquery adapter and run dbt build directly inside your BigQuery warehouse, creating the partitioned and clustered stg_hr_data, dim_employees, and fct_attrition_stats tables.
+  
 
 ### Step 4: Visualizing (Tableau)
 To view the interactive dashboard, reviewers have two options:
