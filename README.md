@@ -94,8 +94,11 @@ Follow these detailed steps to replicate the entire pipeline from scratch.
 * The Kestra flow is configured to automatically pull the latest transformation code directly from the `main` branch of this GitHub repository. 
 * During the execution, it installs the `dbt-bigquery` adapter, connects to your warehouse, and executes `dbt run` to build the Staging, Dimension, and Fact tables.
 
-### Step 4: Visualizing (Tableau / Looker Studio)
-1. Open your BI tool of choice (e.g., Tableau Desktop or Looker Studio).
-2. Create a new connection to **Google BigQuery** using your Google Account credentials.
-3. Navigate to your project and dataset, and import the **`fct_attrition_stats`** table.
-4. Use the `attrition_flag` (set to Average) to calculate the attrition rate, and use the `department` and `income_bracket` fields to recreate the breakdown visuals.
+### Step 4: Visualizing (Tableau)
+To view the interactive dashboard, you do not need to recreate it from scratch. Reviewers have two options:
+
+1. **View the Packaged Workbook (Recommended):** Download the `hr_attrition_dashboard.twbx` file included in this repository. You can open this file using Tableau Desktop or the free Tableau Reader to view and interact with the visualizations. *(Note: If you published it to Tableau Public, you can also view it live here: [Insert your Tableau Public Link here])*
+2. **Recreate from Scratch (Optional):** If you wish to connect it to your own BigQuery instance:
+   * Open Tableau and connect to your Google BigQuery.
+   * Import the `fct_attrition_stats` table from your dataset.
+   * Use the `attrition_flag` (set to Average) to calculate the attrition rate, and use the `department` field to recreate the breakdown visuals.
