@@ -45,10 +45,11 @@ To ensure cost-efficiency and performance, the BigQuery tables were heavily opti
 ---
 
 ## 📈 4. The Dashboard
-The dashboard was built using **Tableau** and contains multiple analytical tiles to satisfy business needs:
-1. **Categorical Distribution:** A bar chart displaying the attrition rate distributed across the three main company departments. 
-2. **Key Performance Indicators (KPIs):** High-level scorecards tracking total company headcount and the global attrition rate.
-3. **Interactivity:** A functional filter allows the user to slice the entire dashboard by specific Job Roles.
+The dashboard was built using **Tableau** and satisfies all project requirements:
+* **Categorical Distribution:** A bar chart displaying attrition rates across the three company departments, identifying Sales as the highest-risk area.
+* **Temporal Distribution:** A line chart showing "Attrition by Years at Company." This trend analysis visualizes turnover risk across the employee lifecycle (satisfying the temporal requirement).
+* **KPI Tiles:** High-level scorecards for Total Headcount and Global Attrition Rate.
+* **Interactivity:** Every chart acts as a filter, allowing users to drill down into specific data points.
 
 ---
 
@@ -94,9 +95,14 @@ Follow these detailed steps to replicate the entire pipeline from scratch.
 * The Kestra flow is configured to automatically pull the latest transformation code directly from the `main` branch of this GitHub repository. 
 * During the execution, it installs the `dbt-bigquery` adapter, connects to your warehouse, and executes `dbt run` to build the Staging, Dimension, and Fact tables.
 
-### Step 4: 📈 The Dashboard
-The dashboard was built using Tableau and satisfies all project requirements:
-* **Categorical Distribution:** A bar chart displaying attrition rates across the three company departments, identifying Sales as the highest-risk area.
-* **Temporal Distribution:** A line chart showing the "Attrition by Years at Company." This trend analysis visualizes turnover risk across the employee lifecycle (satisfying the temporal requirement).
-* **KPI Tiles:** High-level scorecards for Total Headcount and Global Attrition Rate.
-* **Interactivity:** Every chart acts as a filter, allowing users to drill down into specific data points.
+### Step 4: Visualizing (Tableau)
+To view the interactive dashboard, reviewers have two options:
+1. **View the Packaged Workbook (Recommended):** Download the `hr_attrition_dashboard.twbx` file included in this repository. You can open this file using Tableau Desktop or the free Tableau Reader to interact with the visualizations.
+2. **Recreate from Scratch (Optional):** If you wish to connect it to your own BigQuery instance:
+   * Open Tableau and connect to your Google BigQuery.
+   * Import the `fct_attrition_stats` table from your dataset.
+   * Use the `attrition_flag` (set to Average) to calculate the attrition rate, and use the `department` and `Years At Company` fields to recreate the breakdown visuals.
+
+---
+
+## 🎥 Demo Video
