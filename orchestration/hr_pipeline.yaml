@@ -1,0 +1,30 @@
+id: hr_analytics_pipeline
+namespace: zoomcamp
+
+variables:
+  gcp_project_id: "your-project-id"
+  gcp_bucket_name: "your-bucket-name"
+  github_repo: "https://github.com/Amoulas55/hr-analytics-pipeline.git"
+
+tasks:
+  - id: working_directory
+    type: io.kestra.core.tasks.flows.WorkingDirectory
+    tasks:
+      - id: clone_repository
+        type: io.kestra.plugin.git.Clone
+        url: "{{ vars.github_repo }}"
+        branch: main
+
+      # -----------------------------------------------------------------
+      # PASTE YOUR EXISTING GCS UPLOAD AND BIGQUERY LOAD TASKS HERE.
+      # Kestra will now automatically find 'data/hr_dataset.csv' 
+      # because it just cloned your entire repo in the step above!
+      # -----------------------------------------------------------------
+
+      - id: run_dbt
+        type: io.kestra.plugin.dbt.cli.DbtCLI
+        runner: DOCKER
+        dbtPath: /usr/local/bin/dbt
+        projectDir: dbt/   # It automatically finds your dbt folder!
+        commands:
+          - dbt build
