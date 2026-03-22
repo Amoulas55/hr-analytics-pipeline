@@ -52,21 +52,50 @@ The dashboard was built using **Tableau** and contains multiple analytical tiles
 
 ---
 
-## 🚀 5. Reproducibility: How to Run This Project
+## 🚀 Reproducibility: How to Run This Project
 Follow these detailed steps to replicate the entire pipeline from scratch.
 
 ### Prerequisites
 * A Google Cloud Platform (GCP) account.
-* A GCP Service Account with `BigQuery Admin` and `Storage Admin` roles. Download the JSON key.
-* Terraform installed locally.
-* Docker installed locally (to run Kestra).
+* A GCP Service Account with `BigQuery Admin` and `Storage Admin` roles. Download the JSON key and rename it to `google_credentials.json`.
+* **Terraform** installed locally.
+* **Docker** installed locally (to run Kestra).
 
 ### Step 1: Infrastructure as Code (Terraform)
-1. Clone this repository to your local machine.
-2. Navigate to the `/terraform` directory.
-3. Update the `variables.tf` file with your specific `project_id` and GCP region.
-4. Initialize and apply the infrastructure:
+1. Clone this repository to your local machine:
+   ```bash
+   git clone https://github.com/Amoulas55/hr-analytics-pipeline.git
+   cd hr-analytics-pipeline/terraform
+   ```
+2. Update the `variables.tf` file with your specific `project_id` and GCP region.
+3. Initialize and apply the infrastructure:
    ```bash
    terraform init
    terraform plan
    terraform apply
+   ```
+   *This will automatically provision your GCS Data Lake Bucket and BigQuery Dataset.*
+
+### Step 2: Orchestration (Kestra)
+1. Start Kestra locally using Docker Compose. Open a terminal in your project root and run:
+   ```bash
+   curl -o docker-compose.yml https://raw.githubusercontent.com/kestra-io/kestra/develop/docker-compose.yml
+   docker compose up -d
+   ```
+2. Navigate to `http://localhost:8080` in your web browser.
+3. Go to **Flows** -> **Create**.
+4. Copy the YAML code found in the `orchestration/` folder of this repository and paste it into the Kestra editor.
+5. Update the `gcp_project_id` and `gcp_bucket_name` variables in the YAML inputs to match your GCP project.
+6. **Important:** Ensure your `google_credentials.json` is accessible to the Kestra container so it can authenticate with GCP.
+7. Click **Save** and then **Execute**. 
+
+### Step 3: Automated dbt Git-Sync (Transformations)
+* You do **not** need to run dbt commands manually! 
+* The Kestra flow is configured to automatically pull the latest transformation code directly from the `main` branch of this GitHub repository. 
+* During the execution, it installs the `dbt-bigquery` adapter, connects to your warehouse, and executes `dbt run` to build the Staging, Dimension, and Fact tables.
+
+### Step 4: Visualizing (Tableau / Looker Studio)
+1. Open your BI tool of choice (e.g., Tableau Desktop or Looker Studio).
+2. Create a new connection to **Google BigQuery** using your Google Account credentials.
+3. Navigate to your project and dataset, and import the **`fct_attrition_stats`** table.
+4. Use the `attrition_flag` (set to Average) to calculate the attrition rate, and use the `department` and `income_bracket` fields to recreate the breakdown visuals.
